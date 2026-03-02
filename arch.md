@@ -35,11 +35,12 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 
 # Configure Unsloth Environment
+```
 conda create --name nu11_train python=3.10 -y
 conda activate nu11_train
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
-
+```
 ---
 
 ## 🐍 3. TRAINING SCRIPT (train.py)
