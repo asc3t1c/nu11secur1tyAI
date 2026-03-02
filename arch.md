@@ -1,5 +1,3 @@
-- - - ***NOTE:*** A lot of peoples ask me! So, this is in the past =)
-
 # Defined by f0rc3ps and fixed!
 
 # nu11secur1tyAI Training & GGUF Export 🚀
