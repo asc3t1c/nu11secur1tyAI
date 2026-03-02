@@ -1,5 +1,75 @@
 # Defined by f0rc3ps and fixed!
 
+# 🖥️ BARE METAL REQUIREMENTS (Ubuntu/Debian)
+# Optimized for nu11secur1tyAI Training & Unsloth
+
+---
+
+## 1. SYSTEM OS & KERNEL
+- OS: Ubuntu 22.04 LTS / 24.04 LTS (Recommended) or Debian 12 (Bookworm).
+- Kernel: Generic Linux Kernel 6.x.
+- Disk Space: 100GB+ NVMe SSD (Avoid HDD for training checkpoints).
+
+---
+
+## 2. NVIDIA DRIVERS & CUDA (CRITICAL)
+- NVIDIA Driver: v535.xx or newer (550.xx+ recommended).
+- CUDA Toolkit: v12.1 or v12.4.
+- cuDNN: Matching version for your CUDA Toolkit.
+- Persistence Mode: Enabled (sudo nvidia-smi -pm 1).
+
+---
+
+## 3. HARDWARE TUNING (BIOS/UEFI)
+- Resizable BAR: ENABLED (Mandatory for RTX 30/40 series).
+- Above 4G Decoding: ENABLED.
+- XMP/DOCP: ENABLED (To ensure RAM stability at high speeds).
+
+---
+
+## 4. SWAP FILE SETUP (SAFETY NET)
+# Execute as root if you have < 64GB RAM:
+sudo fallocate -l 32G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+---
+
+## 5. ESSENTIAL SYSTEM LIBRARIES
+# Install before setting up Python:
+sudo apt update && sudo apt install -y \
+    build-essential \
+    procps \
+    curl \
+    wget \
+    git \
+    git-lfs \
+    python3-pip \
+    python3-venv \
+    libgl1 \
+    libglib2.0-0
+
+---
+
+## 6. PYTHON ENVIRONMENT (MINICONDA)
+# Use a clean environment for training:
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+
+# After install, restart terminal and:
+conda create --name nu11_train python=3.10 -y
+conda activate nu11_train
+
+---
+
+## 7. UNSLOTH & PYTORCH INSTALLATION
+# Optimized for CUDA 12.1:
+pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
+
+
 # nu11secur1tyAI Training & GGUF Export 🚀
 
 This repository provides a professional-grade framework for Fine-tuning Large Language Models (LLM) and automating the export process to GGUF format for seamless Ollama integration. 
