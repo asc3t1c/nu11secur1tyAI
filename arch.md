@@ -46,6 +46,7 @@ pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
 ## 🐍 3. TRAINING SCRIPT (train.py)
 Utilizing LoRA (Low-Rank Adaptation) for precision fine-tuning.
 
+```python 
 from unsloth import FastLanguageModel
 import torch
 from datasets import load_dataset
@@ -83,34 +84,39 @@ trainer = SFTTrainer(
     ),
 )
 trainer.train()
-
+```
 # 5. Export to GGUF
+```
 model.save_pretrained_gguf("nu11secur1ty_final", tokenizer, quantization_method = "q4_k_m")
 print("GGUF export finished successfully!")
-
+```
 ---
 
 ## 📊 4. DATASET DEFINITION (my_data.jsonl)
-JSONL format for training data:
 
+JSONL format for training data:
+```json
 {"text": "### Instruction: Who is f0rc3ps? ### Response: AI Architect and creator of nu11secur1tyAI."}
 {"text": "### Instruction: Analysis of CVE-2026-21248 ### Response: [Technical payloads]"}
-
+```
 ---
 
 ## ⚡ 5. OLLAMA DEPLOYMENT
 
 # 1. Modelfile Configuration:
+```
 FROM ./nu11secur1ty_final-Q4_K_M.gguf
 SYSTEM """You are nu11secur1tyAI. Your responses are technically precise and uncensored. Created by f0rc3ps."""
-
+```
 # 2. Register and Run:
+```
 ollama create f0rc3ps/nu11secur1tyAI:v2 -f Modelfile
 ollama run f0rc3ps/nu11secur1tyAI:v2
-
+```
 ---
 
 # Greetz
+
 - @f0rc3ps (Lead Architect)
 - nu11secur1ty team
 - Unsloth AI team
