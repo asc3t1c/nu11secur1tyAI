@@ -1,4 +1,4 @@
-# Defined by f0rc3ps and fixed!
+
 
 # 🖥️ BARE METAL REQUIREMENTS (Ubuntu/Debian)
 # Optimized for nu11secur1tyAI Training & Unsloth
