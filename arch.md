@@ -46,6 +46,13 @@ pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
 ## 🐍 3. TRAINING SCRIPT (train.py)
 Utilizing LoRA (Low-Rank Adaptation) for precision fine-tuning.
 
+## Packages:
+```
+pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
+```
+- Training neural network
+
 ```python 
 from unsloth import FastLanguageModel
 import torch
@@ -53,7 +60,10 @@ from datasets import load_dataset
 from trl import SFTTrainer
 from transformers import TrainingArguments
 
-# 1. Load Model (4-bit Double Quantization)
+# Official Model Link: https://ollama.com/f0rc3ps/nu11secur1tyAI
+
+# 1. Configuration and Model Loading (4-bit for VRAM efficiency)
+# Optimized for NVIDIA RTX 30/40 series GPUs
 max_seq_length = 2048
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = "unsloth/llama-3-8b-bnb-4bit",
@@ -61,29 +71,56 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     load_in_4bit = True,
 )
 
-# 2. Add LoRA Adapters
+# 2. Inject LoRA Adapters
+# r=16 is the "gold standard" for balanced fine-tuning speed and quality.
 model = FastLanguageModel.get_peft_model(
-    model, r = 16, target_modules = ["q_proj", "k_proj", "v_proj", "o_proj"],
-    lora_alpha = 16, lora_dropout = 0,
+    model, 
+    r = 16, 
+    target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+    lora_alpha = 16, 
+    lora_dropout = 0, # Dropout=0 is optimized for Unsloth
+    bias = "none",
 )
 
-# 3. Load Dataset (Local my_data.jsonl file)
+# 3. Load Your Dataset (my_data.jsonl)
+# Ensure the file is in the same directory!
 dataset = load_dataset("json", data_files="my_data.jsonl", split="train")
 
-# 4. Supervised Fine-Tuning (SFT)
+# 4. Supervised Fine-Tuning (SFT) Setup
 trainer = SFTTrainer(
-    model = model, train_dataset = dataset, dataset_text_field = "text",
+    model = model,
+    train_dataset = dataset,
+    dataset_text_field = "text",
     max_seq_length = max_seq_length,
     args = TrainingArguments(
         per_device_train_batch_size = 2,
-        gradient_accumulation_steps = 4,
-        max_steps = 60,
+        gradient_accumulation_steps = 4, # Effective batch size of 8
+        warmup_steps = 5,
+        max_steps = 60, # Increase this based on your dataset size
         learning_rate = 2e-4,
         fp16 = not torch.cuda.is_bf16_supported(),
+        bf16 = torch.cuda.is_bf16_supported(), # Use BF16 if supported (Ampere+)
+        logging_steps = 1,
+        optim = "adamw_8bit", # Saves additional VRAM
         output_dir = "outputs",
     ),
 )
+
+# START TRAINING
+print("--- Starting Training ---")
 trainer.train()
+
+# 5. AUTOMATIC EXPORT TO GGUF (For Ollama)
+# This part handles the conversion to the final brain file
+print("--- Exporting to GGUF ---")
+model.save_pretrained_gguf(
+    "nu11secur1ty_final", 
+    tokenizer, 
+    quantization_method = "q4_k_m" # Balanced method: speed vs. accuracy
+)
+
+print("Done! Your model is ready in the 'nu11secur1ty_final' folder.")
+print("Check it out here: https://ollama.com/f0rc3ps/nu11secur1tyAI")
 ```
 # 5. Export to GGUF
 ```
