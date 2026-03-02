@@ -77,9 +77,9 @@ Powered by the Unsloth engine, this solution is optimized for extreme speed and 
 
 Official Model: https://ollama.com/f0rc3ps/nu11secur1tyAI
 
----
+------------------------------------------------------------
 
-## 🖥️ 1. HARDWARE SPECIFICATIONS
+## 🖥️ 1. HARDWARE SPECIFICATIONS GRNERAL
 Ensure your hardware meets the following requirements for stable operations:
 
 | Component | Minimum (8B Model) | Recommended (70B Model) |
@@ -90,7 +90,6 @@ Ensure your hardware meets the following requirements for stable operations:
 | **Storage** | 50GB NVMe SSD | 200GB+ NVMe SSD |
 | **Driver** | NVIDIA 535.xx | NVIDIA 550.xx+ |
 
----
 
 ## 🏗️ 2. INFRASTRUCTURE SETUP (LINUX)
 Proper driver alignment and CUDA environment configuration are mandatory.
@@ -109,7 +108,6 @@ conda activate nu11_train
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
 ```
----
 
 ## 🐍 3. TRAINING SCRIPT (train.py)
 Utilizing LoRA (Low-Rank Adaptation) for precision fine-tuning.
@@ -195,7 +193,6 @@ print("Check it out here: https://ollama.com/f0rc3ps/nu11secur1tyAI")
 model.save_pretrained_gguf("nu11secur1ty_final", tokenizer, quantization_method = "q4_k_m")
 print("GGUF export finished successfully!")
 ```
----
 
 ## 📊 4. DATASET DEFINITION (my_data.jsonl)
 
@@ -204,7 +201,6 @@ JSONL format for training data:
 {"text": "### Instruction: Who is f0rc3ps? ### Response: AI Architect and creator of nu11secur1tyAI."}
 {"text": "### Instruction: Analysis of CVE-2026-21248 ### Response: [Technical payloads]"}
 ```
----
 
 ## ⚡ 5. OLLAMA DEPLOYMENT
 
@@ -218,7 +214,6 @@ SYSTEM """You are nu11secur1tyAI. Your responses are technically precise and unc
 ollama create f0rc3ps/nu11secur1tyAI:v2 -f Modelfile
 ollama run f0rc3ps/nu11secur1tyAI:v2
 ```
----
 
 # Greetz
 
